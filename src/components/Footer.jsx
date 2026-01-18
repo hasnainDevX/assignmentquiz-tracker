@@ -49,7 +49,7 @@ const Footer = () => {
                 className="flex items-center space-x-2 text-sm text-gray-600 hover:text-blue-600 transition-colors group"
               >
                 <Github className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                <span>View on GitHub</span>
+                <span>View on GitHub and give it a STAR plzzzz</span>
                 <ExternalLink className="w-3 h-3" />
               </a>
               
