@@ -14,6 +14,7 @@ import {
   getAssignments
 } from './utils/localStorage';
 import { fetchAssignments } from './lib/sanity';
+import Footer from './components/Footer';
 
 function App() {
   const [assignments, setAssignments] = useState([]);
@@ -207,6 +208,7 @@ function App() {
           </div>
         )}
       </main>
+      <Footer/>
     </div>
   );
 }
