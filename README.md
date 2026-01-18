@@ -37,7 +37,7 @@ AssignmentHub helps students stay organized by providing a clean interface to tr
 
 1. Clone the repository
 ```bash
-git clone https://github.com/hasnaindevx/assignment-tracker.git
+git clone https://github.com/hasnaindevx/assignmentquiz-tracker.git
 cd assignment-tracker
 ```
 
