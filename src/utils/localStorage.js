@@ -1,5 +1,4 @@
 // src/utils/localStorage.js
-
 const STORAGE_KEY = 'assignmentTracker';
 
 // Get all data from localStorage

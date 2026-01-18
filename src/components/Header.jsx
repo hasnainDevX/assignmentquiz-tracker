@@ -35,7 +35,7 @@ const Header = () => {
             <div className="flex items-center space-x-3 pl-4 border-l border-gray-200">
               <div className="text-right hidden sm:block">
                 <p className="text-sm font-medium text-gray-900">Student</p>
-                <p className="text-xs text-gray-500">Spring 2026</p>
+                <p className="text-xs text-gray-500">FALL 2025</p>
               </div>
               <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-semibold">
                 S

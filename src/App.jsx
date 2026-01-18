@@ -10,99 +10,14 @@ import {
   getUserPreferences,
   saveUserPreferences,
   getStats,
-  saveAssignments
+  saveAssignments,
+  getAssignments
 } from './utils/localStorage';
-
-// Mock data for initial load (only if localStorage is empty)
-const mockAssignments = [
-  {
-    id: 1,
-    title: 'React Component Architecture Quiz',
-    course: 'Web Development',
-    courseCode: 'CS301',
-    type: 'quiz',
-    dueDate: '2026-01-18T10:00:00',
-    status: 'pending',
-    description: 'Covering hooks, state management, and component lifecycle'
-  },
-  {
-    id: 2,
-    title: 'Database Design Project',
-    course: 'Database Systems',
-    courseCode: 'CS402',
-    type: 'project',
-    dueDate: '2026-01-25T23:59:00',
-    status: 'pending',
-    description: 'Design and implement a normalized database schema'
-  },
-  {
-    id: 3,
-    title: 'Algorithm Analysis Assignment',
-    course: 'Data Structures',
-    courseCode: 'CS201',
-    type: 'assignment',
-    dueDate: '2026-01-20T17:00:00',
-    status: 'pending',
-    description: 'Big O notation and time complexity analysis'
-  },
-  {
-    id: 4,
-    title: 'Midterm Exam',
-    course: 'Software Engineering',
-    courseCode: 'CS350',
-    type: 'exam',
-    dueDate: '2026-01-22T14:00:00',
-    status: 'pending',
-    description: 'Chapters 1-5, SDLC, Agile, Testing'
-  },
-  {
-    id: 5,
-    title: 'Linear Algebra Problem Set',
-    course: 'Mathematics',
-    courseCode: 'MATH205',
-    type: 'assignment',
-    dueDate: '2026-02-01T23:59:00',
-    status: 'pending',
-    description: 'Matrix operations and eigenvalues'
-  },
-  {
-    id: 6,
-    title: 'UI/UX Presentation',
-    course: 'Human-Computer Interaction',
-    courseCode: 'CS380',
-    type: 'presentation',
-    dueDate: '2026-01-28T11:00:00',
-    status: 'pending',
-    description: 'Present usability testing results'
-  },
-  {
-    id: 7,
-    title: 'Machine Learning Lab 3',
-    course: 'Artificial Intelligence',
-    courseCode: 'CS450',
-    type: 'lab',
-    dueDate: '2026-01-19T23:59:00',
-    status: 'pending',
-    description: 'Implement neural network from scratch'
-  },
-  {
-    id: 8,
-    title: 'Research Paper Draft',
-    course: 'Computer Science Research',
-    courseCode: 'CS499',
-    type: 'project',
-    dueDate: '2026-01-30T23:59:00',
-    status: 'pending',
-    description: 'Submit first draft of research paper'
-  }
-];
+import { fetchAssignments } from './lib/sanity';
 
 function App() {
-  // Load from localStorage or use mock data
-  const [assignments, setAssignments] = useState(() => {
-    return initializeWithMockData(mockAssignments);
-  });
-
+  const [assignments, setAssignments] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [userPrefs, setUserPrefs] = useState(() => getUserPreferences());
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState(userPrefs.filterType);
@@ -110,10 +25,47 @@ function App() {
   const [viewMode, setViewMode] = useState(userPrefs.viewMode);
   const [userStats, setUserStats] = useState(() => getStats());
 
+  // Fetch assignments from Sanity on mount
+  useEffect(() => {
+    const loadAssignments = async () => {
+      try {
+        setLoading(true);
+        // Fetch from Sanity
+        const sanityAssignments = await fetchAssignments();
+        
+        // Get local storage assignments (for status tracking)
+        const localAssignments = getAssignments();
+        
+        // Merge: Use Sanity data but preserve local status
+        const mergedAssignments = sanityAssignments.map(sanityAssignment => {
+          const localMatch = localAssignments.find(local => local.id === sanityAssignment.id);
+          return {
+            ...sanityAssignment,
+            status: localMatch?.status || 'pending'
+          };
+        });
+        
+        setAssignments(mergedAssignments);
+        saveAssignments(mergedAssignments);
+      } catch (error) {
+        console.error('Error loading assignments:', error);
+        // Fallback to localStorage if Sanity fails
+        const localAssignments = getAssignments();
+        setAssignments(localAssignments);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadAssignments();
+  }, []);
+
   // Save to localStorage whenever assignments change
   useEffect(() => {
-    saveAssignments(assignments);
-  }, [assignments]);
+    if (!loading) {
+      saveAssignments(assignments);
+    }
+  }, [assignments, loading]);
 
   // Save preferences when they change
   useEffect(() => {
@@ -191,6 +143,18 @@ function App() {
     };
   }, [assignments, userStats]);
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+          <p className="text-gray-600">Loading assignments...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       <Header stats={userStats} />
@@ -220,7 +184,12 @@ function App() {
               </svg>
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-1">No assignments found</h3>
-            <p className="text-gray-500">Try adjusting your filters or search term</p>
+            <p className="text-gray-500">
+              {assignments.length === 0 
+                ? 'Add assignments from your Sanity dashboard to get started'
+                : 'Try adjusting your filters or search term'
+              }
+            </p>
           </div>
         ) : (
           <div className={

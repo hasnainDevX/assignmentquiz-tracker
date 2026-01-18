@@ -7,8 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "sanity": "sanity dev"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@sanity/vision": "^5.4.0",
