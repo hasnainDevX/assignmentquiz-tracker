@@ -43,7 +43,7 @@ const Footer = () => {
             <h3 className="text-sm font-semibold text-gray-900 mb-3">Connect</h3>
             <div className="space-y-2">
               <a
-                href="https://github.com/yourusername/assignment-tracker"
+                href="https://github.com/hasnaindevx/assignmentquiz-tracker"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-2 text-sm text-gray-600 hover:text-blue-600 transition-colors group"
@@ -54,7 +54,7 @@ const Footer = () => {
               </a>
               
               <a
-                href="https://github.com/hasnaindevx/assignment-tracker/issues"
+                href="https://github.com/hasnaindevx/assignmentquiz-tracker/issues"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-2 text-sm text-gray-600 hover:text-blue-600 transition-colors group"
@@ -65,7 +65,7 @@ const Footer = () => {
               </a>
 
               <a
-                href="https://github.com/hasnaindevx/assignment-tracker#contributing"
+                href="https://github.com/hasnaindevx/assignmentquiz-tracker#contributing"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-2 text-sm text-gray-600 hover:text-blue-600 transition-colors group"
